@@ -203,6 +203,12 @@ int RpcLibClientBase::simGetSegmentationObjectID(const std::string& mesh_name) c
     return pimpl_->client.call("simGetSegmentationObjectID", mesh_name).as<int>();
 }
 
+vector<AllSegmentationIDsResponse> RpcLibClientBase::simGetAllSegmentationObjectIDs() const
+{
+    const auto& response_adaptor = pimpl_->client.call("simGetAllSegmentationObjectIDs").as<vector<RpcLibAdapatorsBase::AllSegmentationIDsResponse>>();
+    return RpcLibAdapatorsBase::AllSegmentationIDsResponse::to(response_adaptor);
+}
+
 CollisionInfo RpcLibClientBase::simGetCollisionInfo(const std::string& vehicle_name) const
 {
     return pimpl_->client.call("simGetCollisionInfo", vehicle_name).as<RpcLibAdapatorsBase::CollisionInfo>().to();

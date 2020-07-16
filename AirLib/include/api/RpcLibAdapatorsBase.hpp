@@ -66,7 +66,7 @@ public:
         int object_id = -1;
 
         MSGPACK_DEFINE_MAP(has_collided, penetration_depth, time_stamp, normal, impact_point, position, object_name, object_id);
-        
+
         CollisionInfo()
         {}
 
@@ -190,7 +190,7 @@ public:
             d.vendor_id = vendor_id;
             d.is_initialized = is_initialized;
             d.is_valid = is_valid;
-            
+
             return d;
         }
     };
@@ -248,7 +248,7 @@ public:
             return s;
         }
     };
-    
+
     struct KinematicsState {
         Vector3r position;
         Quaternionr orientation;
@@ -375,7 +375,7 @@ public:
                 request.push_back(item.to());
 
             return request;
-        }         
+        }
     };
 
     struct ImageResponse {
@@ -401,7 +401,7 @@ public:
         ImageResponse(const msr::airlib::ImageCaptureBase::ImageResponse& s)
         {
             pixels_as_float = s.pixels_as_float;
-            
+
             image_data_uint8 = s.image_data_uint8;
             image_data_float = s.image_data_float;
 
@@ -596,7 +596,7 @@ public:
 
     struct GnssReport {
         GeoPoint geo_point;
-        msr::airlib::real_T eph = 0.0, epv = 0.0; 
+        msr::airlib::real_T eph = 0.0, epv = 0.0;
         Vector3r velocity;
         msr::airlib::GpsBase::GnssFixType fix_type;
         uint64_t time_utc = 0;
@@ -693,6 +693,46 @@ public:
 
             return d;
         }
+    };
+
+    struct AllSegmentationIDsResponse {
+        std::string mesh_name;
+        int id;
+
+        MSGPACK_DEFINE_MAP(mesh_name, id);
+
+        AllSegmentationIDsResponse()
+        {}
+
+        AllSegmentationIDsResponse(const msr::airlib::AllSegmentationIDsResponse& s)
+        {
+            mesh_name = s.mesh_name;
+            id = s.id;
+        }
+
+        msr::airlib::AllSegmentationIDsResponse to() const
+        {
+            return msr::airlib::AllSegmentationIDsResponse(mesh_name, id);
+        }
+
+        static std::vector<msr::airlib::AllSegmentationIDsResponse> to(const std::vector<AllSegmentationIDsResponse>& response_adapter) {
+            std::vector<msr::airlib::AllSegmentationIDsResponse> response;
+            for (const auto& item : response_adapter)
+                response.push_back(item.to());
+
+            return response;
+        }
+
+        static std::vector<AllSegmentationIDsResponse> from(
+            const std::vector<msr::airlib::AllSegmentationIDsResponse>& response)
+        {
+            std::vector<AllSegmentationIDsResponse> response_adapter;
+            for (const auto& item : response)
+                response_adapter.push_back(AllSegmentationIDsResponse(item));
+
+            return response_adapter;
+        }
+
     };
 
     struct MeshPositionVertexBuffersResponse {

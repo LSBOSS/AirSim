@@ -23,6 +23,8 @@
 #include "common/common_utils/Utils.hpp"
 #include "Modules/ModuleManager.h"
 
+#include <map>
+
 /*
 //TODO: change naming conventions to same as other files?
 Naming conventions in this file:
@@ -321,6 +323,44 @@ bool UAirBlueprintLib::SetMeshStencilID(const std::string& mesh_name, int object
 
     return changes > 0;
 }
+
+std::vector<msr::airlib::AllSegmentationIDsResponse> UAirBlueprintLib::GetAllMeshStencilID()
+{
+    std::vector<msr::airlib::AllSegmentationIDsResponse> result;
+    std::map<int, std::string> unique_result;
+
+    // Determines correct name of passed mesh based on MeshNamingMethod in settings.json and saves it + corresponding
+    // object ID if not present already (i.e. have unique results per object ID)
+    auto populateResultSet = [&unique_result](auto mesh) {
+        int id = mesh->CustomDepthStencilValue;
+        if (id > 0) {
+            const std::string mesh_name = common_utils::Utils::toLower(GetMeshName(mesh));
+            // Skip empty names and engine defaults
+            if (mesh_name.length() > 0 && !common_utils::Utils::startsWith(mesh_name, "default_")) {
+                unique_result.try_emplace(id, mesh_name);
+            }
+        }
+    };
+
+    for (TObjectIterator<UStaticMeshComponent> comp; comp; ++comp)
+    {
+        populateResultSet(*comp);
+    }
+    for (TObjectIterator<USkinnedMeshComponent> comp; comp; ++comp)
+    {
+        populateResultSet(*comp);
+    }
+    for (TObjectIterator<ALandscapeProxy> comp; comp; ++comp)
+    {
+        populateResultSet(*comp);
+    }
+
+    for (const auto& p : unique_result) {
+        result.emplace_back(msr::airlib::AllSegmentationIDsResponse(p.second, p.first));
+    }
+
+    return result;
+ }
 
 int UAirBlueprintLib::GetMeshStencilID(const std::string& mesh_name)
 {

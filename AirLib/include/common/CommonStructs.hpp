@@ -313,5 +313,19 @@ struct MeshPositionVertexBuffersResponse {
     std::string name;
 };
 
+struct AllSegmentationIDsResponse {
+    std::string mesh_name;
+    int id;
+
+    AllSegmentationIDsResponse() : mesh_name(""), id(-1)
+    {
+    }
+
+    AllSegmentationIDsResponse(const std::string& mesh_name, int id) :
+        mesh_name(mesh_name), id(id)
+    {
+    }
+};
+
 }} //namespace
 #endif

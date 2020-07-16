@@ -57,6 +57,15 @@ int WorldSimApi::getSegmentationObjectID(const std::string& mesh_name) const
     return result;
 }
 
+std::vector<msr::airlib::AllSegmentationIDsResponse> WorldSimApi::getAllSegmentationObjectIDs() const
+{
+    std::vector<msr::airlib::AllSegmentationIDsResponse> result;
+    UAirBlueprintLib::RunCommandOnGameThread([&result]() {
+        result = UAirBlueprintLib::GetAllMeshStencilID();
+    }, true);
+    return result;
+}
+
 void WorldSimApi::printLogMessage(const std::string& message,
     const std::string& message_param, unsigned char severity)
 {

@@ -386,6 +386,14 @@ class VehicleClient:
         """
         return self.client.call('simGetSegmentationObjectID', mesh_name)
 
+    def simGetAllSegmentationObjectIDs(self):
+        """
+        Returns a list all mesh names and their Object IDs in the environment.
+        Together with the mapping of Object IDs to RGB values stored here https://microsoft.github.io/AirSim/seg_rgbs.txt
+        this function can be used to translate RGB values from a segmentation image to mesh names for further processing.
+        """
+        return self.client.call('simGetAllSegmentationObjectIDs')
+
     def simPrintLogMessage(self, message, message_param = "", severity = 0):
         """
         Prints the specified message in the simulator's window.
